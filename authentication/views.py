@@ -57,22 +57,24 @@ class VerifyEmail(views.APIView):
     serializer_class = EmailVerificationSerializer
 
     token_param_config = openapi.Parameter(
-        'token', in_=openapi.IN_QUERY, description='Description', type=openapi.TYPE_STRING)
+        'token', in_=openapi.IN_QUERY, description='Token for email verification', type=openapi.TYPE_STRING)
 
     @swagger_auto_schema(manual_parameters=[token_param_config])
     def get(self, request):
         token = request.GET.get('token')
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY)
+            # Decode the token using the appropriate algorithm
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
             user = User.objects.get(id=payload['user_id'])
             if not user.is_verified:
                 user.is_verified = True
                 user.save()
             return Response({'email': 'Successfully activated'}, status=status.HTTP_200_OK)
-        except jwt.ExpiredSignatureError as identifier:
-            return Response({'error': 'Activation Expired'}, status=status.HTTP_400_BAD_REQUEST)
-        except jwt.exceptions.DecodeError as identifier:
+        except jwt.ExpiredSignatureError:
+            return Response({'error': 'Activation link expired'}, status=status.HTTP_400_BAD_REQUEST)
+        except jwt.DecodeError:
             return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class LoginAPIView(generics.GenericAPIView):
