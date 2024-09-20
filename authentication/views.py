@@ -59,6 +59,8 @@ class RegisterView(generics.GenericAPIView):
         except Exception as e:
             return Response({'error': 'An unexpected error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    def get(self, request):
+        return Response({'message': 'Please use POST to register.'}, status=status.HTTP_200_OK)
 
 class VerifyEmail(views.APIView):
     serializer_class = EmailVerificationSerializer
