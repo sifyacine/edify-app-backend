@@ -19,11 +19,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Use environment variables for sensitive data
 SECRET_KEY = 'django-insecure-w^7=p4iwy7csf$wdwc%%#jsyugb(c^&%yhoigz3e_4@u&^5wqp'
-DEBUG = os.environ.get('DEBUG', default=False, cast=bool)
+
+
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
 AUTH_USER_MODEL = 'authentication.User'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'your-digital-ocean-domain.com']
 
 # Application definition
 INSTALLED_APPS = [
@@ -102,6 +105,7 @@ SIMPLE_JWT = {
 }
 
 WSGI_APPLICATION = 'edify.wsgi.application'
+'''
 
 # Database configuration using environment variables
 DATABASES = {
@@ -120,6 +124,20 @@ DATABASES = {
         }
     }
 }
+
+'''
+
+
+# Database
+# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -152,8 +170,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = 'ycn585@gmail.com'
+EMAIL_HOST_PASSWORD = 'zzecwixepkemketl'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
