@@ -28,29 +28,36 @@ class CustomRedirect(HttpResponsePermanentRedirect):
     allowed_schemes = [os.environ.get('APP_SCHEME'), 'http', 'https']
 
 
-class RegisterView(generics.GenericAPIView):
+from rest_framework.exceptions import ValidationError
 
+class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
     renderer_classes = (UserRenderer,)
 
     def post(self, request):
         user = request.data
         serializer = self.serializer_class(data=user)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        user_data = serializer.data
-        user = User.objects.get(email=user_data['email'])
-        token = RefreshToken.for_user(user).access_token
-        current_site = get_current_site(request).domain
-        relativeLink = reverse('email-verify')
-        absurl = 'http://'+current_site+relativeLink+"?token="+str(token)
-        email_body = 'Hi '+user.username + \
-            ' Use the link below to verify your email \n' + absurl
-        data = {'email_body': email_body, 'to_email': user.email,
-                'email_subject': 'Verify your email'}
-
-        Util.send_email(data)
-        return Response(user_data, status=status.HTTP_201_CREATED)
+        
+        try:
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            user_data = serializer.data
+            user = User.objects.get(email=user_data['email'])
+            token = RefreshToken.for_user(user).access_token
+            
+            current_site = get_current_site(request).domain
+            relativeLink = reverse('email-verify')
+            absurl = f'http://{current_site}{relativeLink}?token={str(token)}'
+            email_body = f'Hi {user.username}, Use the link below to verify your email:\n{absurl}'
+            data = {'email_body': email_body, 'to_email': user.email,
+                    'email_subject': 'Verify your email'}
+            Util.send_email(data)
+            return Response(user_data, status=status.HTTP_201_CREATED)
+        
+        except ValidationError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': 'An unexpected error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class VerifyEmail(views.APIView):
