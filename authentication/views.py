@@ -13,7 +13,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from .renderers import UserRenderer
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.utils.encoding import smart_str, smart_bytes, DjangoUnicodeDecodeError
+from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
@@ -28,39 +28,30 @@ class CustomRedirect(HttpResponsePermanentRedirect):
     allowed_schemes = [os.environ.get('APP_SCHEME'), 'http', 'https']
 
 
-from rest_framework.exceptions import ValidationError
-
 class RegisterView(generics.GenericAPIView):
+
     serializer_class = RegisterSerializer
     renderer_classes = (UserRenderer,)
 
     def post(self, request):
         user = request.data
         serializer = self.serializer_class(data=user)
-        
-        try:
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            user_data = serializer.data
-            user = User.objects.get(email=user_data['email'])
-            token = RefreshToken.for_user(user).access_token
-            
-            current_site = get_current_site(request).domain
-            relativeLink = reverse('email-verify')
-            absurl = f'http://{current_site}{relativeLink}?token={str(token)}'
-            email_body = f'Hi {user.username}, Use the link below to verify your email:\n{absurl}'
-            data = {'email_body': email_body, 'to_email': user.email,
-                    'email_subject': 'Verify your email'}
-            Util.send_email(data)
-            return Response(user_data, status=status.HTTP_201_CREATED)
-        
-        except ValidationError as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response({'error': 'An unexpected error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        user_data = serializer.data
+        user = User.objects.get(email=user_data['email'])
+        token = RefreshToken.for_user(user).access_token
+        current_site = get_current_site(request).domain
+        relativeLink = reverse('email-verify')
+        absurl = 'http://'+current_site+relativeLink+"?token="+str(token)
+        email_body = 'Hi '+user.username + \
+            ' Use the link below to verify your email \n' + absurl
+        data = {'email_body': email_body, 'to_email': user.email,
+                'email_subject': 'Verify your email'}
 
-    def get(self, request):
-        return Response({'message': 'Please use POST to register.'}, status=status.HTTP_200_OK)
+        Util.send_email(data)
+        return Response(user_data, status=status.HTTP_201_CREATED)
+
 
 class VerifyEmail(views.APIView):
     serializer_class = EmailVerificationSerializer
@@ -173,15 +164,3 @@ class LogoutAPIView(generics.GenericAPIView):
         serializer.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-'''
-sign up response
-{
-    "data": {
-        "email": "ycn585@gmail.com",
-        "username": "yacine"
-    }
-}
-
-'''

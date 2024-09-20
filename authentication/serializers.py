@@ -14,9 +14,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         max_length=68, min_length=6, write_only=True)
 
     default_error_messages = {
-        'username': 'The username should only contain alphanumeric characters.',
-        'email_exists': 'A user with this email already exists.'
-    }
+        'username': 'The username should only contain alphanumeric characters'}
 
     class Meta:
         model = User
@@ -28,15 +26,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         if not username.isalnum():
             raise serializers.ValidationError(
-                {'username': self.default_error_messages['username']}
-            )
-
-        # Check if email already exists
-        if User.objects.filter(email=email).exists():
-            raise serializers.ValidationError(
-                {'email': self.default_error_messages['email_exists']}
-            )
-
+                self.default_error_messages)
         return attrs
 
     def create(self, validated_data):
