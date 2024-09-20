@@ -19,7 +19,7 @@ from decouple import config  # Import config from python-decouple
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Use environment variables for sensitive data
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = 'django-insecure-w^7=p4iwy7csf$wdwc%%#jsyugb(c^&%yhoigz3e_4@u&^5wqp'
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 AUTH_USER_MODEL = 'authentication.User'
