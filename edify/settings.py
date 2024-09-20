@@ -13,14 +13,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 import datetime
-from decouple import config  # Import config from python-decouple
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Use environment variables for sensitive data
 SECRET_KEY = 'django-insecure-w^7=p4iwy7csf$wdwc%%#jsyugb(c^&%yhoigz3e_4@u&^5wqp'
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = os.environ.get('DEBUG', default=False, cast=bool)
 
 AUTH_USER_MODEL = 'authentication.User'
 
