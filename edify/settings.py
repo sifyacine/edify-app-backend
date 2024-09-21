@@ -20,12 +20,21 @@ load_dotenv(find_dotenv())
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Print environment variable values to debug
+print(f"DATABASE_NAME: {os.environ.get('DATABASE_NAME')}")
+print(f"DATABASE_USER: {os.environ.get('DATABASE_USER')}")
+print(f"DATABASE_PASSWORD: {os.environ.get('DATABASE_PASSWORD')}")
+print(f"DATABASE_HOST: {os.environ.get('DATABASE_HOST')}")
+print(f"DATABASE_PORT: {os.environ.get('DATABASE_PORT')}")
+print(f"EMAIL_HOST_USER: {os.environ.get('EMAIL_HOST_USER')}")
+print(f"EMAIL_HOST_PASSWORD: {os.environ.get('EMAIL_HOST_PASSWORD')}")
+
 # Use environment variables for sensitive data
 SECRET_KEY = 'django-insecure-w^7=p4iwy7csf$wdwc%%#jsyugb(c^&%yhoigz3e_4@u&^5wqp'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['edify-jicc8.ondigitalocean.app', '127.0.0.1', 'localhost']
 
 AUTH_USER_MODEL = 'authentication.User'
 
