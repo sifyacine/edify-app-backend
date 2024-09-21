@@ -128,11 +128,11 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # Using MySQL backend
-        'NAME': os.environ.get('DATABASE_NAME'),                   # Database name
-        'USER': os.environ.get('DATABASE_USER'),                     # Database username
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),  # Database password
-        'HOST': os.environ.get('DATABASE_HOST'),  # Host
-        'PORT': os.environ.get('DATABASE_PORT'),                       # Port
+        'NAME': os.environ('DATABASE_NAME'),                   # Database name
+        'USER': os.environ('DATABASE_USER'),                     # Database username
+        'PASSWORD': os.environ('DATABASE_PASSWORD'),  # Database password
+        'HOST': os.environ('DATABASE_HOST'),  # Host
+        'PORT': os.environ('DATABASE_PORT'),                       # Port
         'OPTIONS': {
             'ssl': {
                 'sslmode': 'REQUIRED',         # SSL mode
@@ -172,8 +172,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = os.environ('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ('EMAIL_HOST_PASSWORD')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+print('DATABASE NAME:', os.getenv('DATABASE_NAME'))  # Check if the variable is being fetched
