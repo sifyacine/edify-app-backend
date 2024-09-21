@@ -107,7 +107,7 @@ SIMPLE_JWT = {
 }
 
 WSGI_APPLICATION = 'edify.wsgi.application'
-'''
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -115,23 +115,9 @@ DATABASES = {
     }
 }
 
-'''
+
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',  # Using MySQL backend
-        'NAME': os.environ.get('DATABASE_NAME'),                   # Database name
-        'USER': os.environ.get('DATABASE_USER'),                     # Database username
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),  # Database password
-        'HOST': os.environ.get('DATABASE_HOST'),  # Host
-        'PORT': os.environ.get('DATABASE_PORT'),                       # Port
-        'OPTIONS': {
-            'ssl': {
-                'sslmode': 'REQUIRED',         # SSL mode
-            },
-        },
-    }
-}
+
 
 
 # Password validation
