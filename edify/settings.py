@@ -177,6 +177,3 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-print('DATABASE NAME:', os.getenv.get('DATABASE_NAME'))  # Check if the variable is being fetched
