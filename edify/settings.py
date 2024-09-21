@@ -21,7 +21,7 @@ load_dotenv(find_dotenv())
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Use environment variables for sensitive data
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ('SECRET_KEY', 'django-insecure-w^7=p4iwy7csf$wdwc%%#jsyugb(c^&%yhoigz3e_4@u&^5wqp')
 
 DEBUG = True
 
