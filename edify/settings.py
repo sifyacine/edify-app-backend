@@ -13,12 +13,15 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 import datetime
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Use environment variables for sensitive data
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-w^7=p4iwy7csf$wdwc%%#jsyugb(c^&%yhoigz3e_4@u&^5wqp')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = True
 
@@ -103,14 +106,32 @@ SIMPLE_JWT = {
 }
 
 WSGI_APPLICATION = 'edify.wsgi.application'
-
-# Database
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+'''
+# Database
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',  # Using MySQL backend
+        'NAME': os.environ.get('DATABASE_NAME'),                   # Database name
+        'USER': os.environ.get('DATABASE_USER'),                     # Database username
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),  # Database password
+        'HOST': os.environ.get('DATABASE_HOST'),  # Host
+        'PORT': os.environ.get('DATABASE_PORT'),                       # Port
+        'OPTIONS': {
+            'ssl': {
+                'sslmode': 'REQUIRED',         # SSL mode
+            },
+        },
+    }
+}
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -142,8 +163,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'ycn585@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'zzecwixepkemketl')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
