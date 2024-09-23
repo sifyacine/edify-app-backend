@@ -45,10 +45,12 @@ def validate_image_extension(value: UploadedFile):
 
 class CoursesSerializer(serializers.ModelSerializer):
     member = MemberCreateSerializer(required = False)
+    share_url = serializers.SerializerMethodField()
+    slug = serializers.SlugField(required = False)
     hashtags = serializers.ListField(child = serializers.CharField(max_length = 100 ),write_only = True , required = False)
     class Meta:
         model = Courses
-        fields = ['course_name','course_title','course_desc','course_video_intro','course_img_video','course_video_number','course_rating','member','hashtags']
+        fields = ['course_name','course_title','course_desc','course_video_intro','course_img_video','course_video_number','course_rating','member','hashtags','slug','share_url']
     course_video_intro = serializers.FileField(validators=[validate_file_size, validate_file_extension ])
     course_img_video = serializers.ImageField(validators=[validate_image_size , validate_image_extension ])
 
@@ -60,3 +62,6 @@ class CoursesSerializer(serializers.ModelSerializer):
             hashtag , created = Hashtag.objects.get_or_create(name = hashtag_name)
             course.hashtags.add(hashtag)
         return course
+    def get_share_url(self, obj):
+        # assuming you have a slug field, replace with ID if needed
+        return f"http://127.0.0.1:8000/courses/{obj.slug}/"

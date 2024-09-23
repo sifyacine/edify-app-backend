@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
@@ -12,6 +13,7 @@ class CourseCreateView(APIView):
     def post(self , request):
         serializer = CoursesSerializer(data = request.data)
         if serializer.is_valid():
+            
             serializer.save()
             return Response({"status":"success","data":serializer.data},status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -48,3 +50,13 @@ class DeleteCourseView(APIView):
             return Response({'status':'failure','error':"this course has not been founded in the database"})
         course.delete()
         return Response({'status':'success'},status=status.HTTP_200_OK)
+    
+class CourseDetailView(APIView):
+    def get(self , request , slug , format = None):
+        course = get_object_or_404(Courses , slug = slug)
+        serializer = CoursesSerializer(course)
+        share_url  = request.build_absolute_uri(reverse('course_detail',args = [course.slug]))
+        data = serializer.data
+        data['share_url'] = share_url
+        return Response({'status':'success','message':data},status=status.HTTP_200_OK)
+

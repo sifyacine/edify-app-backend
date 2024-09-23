@@ -37,12 +37,12 @@ def validate_file_extension(value: UploadedFile):
 class ShortVideoSeriliazer(serializers.ModelSerializer):
     class Meta:
         model = ShortVideo
-        fields = ['short_title', 'short_video', 'short_likes', 'short_comments', 'short_time', 'member','hashtags']
-
+        fields = ['short_title', 'short_video', 'short_likes', 'short_comments', 'short_time', 'member','hashtags','slug','share_url']
+    share_url = serializers.SerializerMethodField()
     member = MemberCreateSerializer(required = False)
     short_video = serializers.FileField(validators=[validate_file_size, validate_file_extension ])
-    hashtags = serializers.ListField(child = serializers.CharField(max_length = 100),write_only = True,required = False)
-
+    hashtags = serializers.ListField(child = serializers.CharField(max_length = 100,required = False),write_only = True,required = False)
+    slug = serializers.SlugField(required = False)
     def create(self,validated_data):
         hashtags_data = validated_data.pop('hashtags',None)
         video_short = ShortVideo.objects.create(**validated_data)
@@ -50,7 +50,9 @@ class ShortVideoSeriliazer(serializers.ModelSerializer):
             hashtag , created = Hashtag.objects.get_or_create(name = hashtag_name)
             video_short.hashtags.add(hashtag)
         return video_short
-    
+    def get_share_url(self, obj):
+        # assuming you have a slug field, replace with ID if needed
+        return f"http://127.0.0.1:8000/shortvideo/{obj.slug}/"
 class LikeAndCommentSerializer(serializers.Serializer):
     id = serializers.IntegerField()
 

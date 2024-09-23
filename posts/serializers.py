@@ -55,11 +55,12 @@ class PostsSerializer(serializers.ModelSerializer):
     likes = PostLikeSerializer(many = True,read_only = True)
     comments = PostLikeSerializer(many = True,read_only = True)
     member = MemberCreateSerializer(required = False)
+    slug = serializers.SlugField(required=False)
     hashtags = serializers.ListField(child = serializers.CharField(max_length = 100),write_only = True,required = False)
-   
+    share_url = serializers.SerializerMethodField()
     class Meta:
         model = Post
-        fields = ['id','post_title','post_likes','post_comments','post_time', 'member','images','likes','comments','hashtags']
+        fields = ['id','post_title','post_likes','post_comments','post_time', 'member','images','likes','comments','hashtags','slug','share_url']
      
    
     
@@ -71,6 +72,10 @@ class PostsSerializer(serializers.ModelSerializer):
             hashtag , created = Hashtag.objects.get_or_create(name = hashtag_name)
             post.hashtags.add(hashtag)
         return post
+    def get_share_url(self, obj):
+        # assuming you have a slug field, replace with ID if needed
+        return f"http://127.0.0.1:8000/posts/{obj.slug}/"
+        
     
 
     

@@ -1,5 +1,7 @@
 
 
+from django.urls import reverse
+
 from django.http import Http404, JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -12,7 +14,7 @@ from .models import Post
 
 from .serializers import  PostsSerializer ,PostImagesSerializer
 
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404 
 
 
 class CreatePost(APIView):
@@ -21,9 +23,8 @@ class CreatePost(APIView):
 
         if serializer.is_valid():
             post = serializer.save()
-            member = Member.objects.get(pk = request.data['member'])
-            member.my_posts = post
-            print(request.FILES)
+            
+      
             images = request.FILES.getlist('images')
 
             for image in images:
@@ -88,3 +89,15 @@ class SearchByHashtag(APIView):
         posts = Post.objects.filter(hashtags = hashtag)
         serializer = PostsSerializer(posts , many=True)
         return Response({'status':'success','message':serializer.data},status=status.HTTP_200_OK)
+
+
+class PostDetailView(APIView):
+    def get(self , request , slug , format = None):
+        post = get_object_or_404(Post , slug = slug)
+        serializer = PostsSerializer(post)
+        share_url  = request.build_absolute_uri(reverse('post_detail',args = [post.slug]))
+        data = serializer.data
+        data['share_url'] = share_url
+        return Response({'status':'success','message':data},status=status.HTTP_200_OK)
+
+
