@@ -26,3 +26,4 @@ class MemberListView(generics.ListAPIView):
     queryset = Member.objects.all()
     serializer_class = MemberListSerializer
     permission_classes = [IsAuthenticated]
+# View to list all members
