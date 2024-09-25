@@ -14,16 +14,15 @@ class MemberCreateView(generics.CreateAPIView):
         # Automatically associate the current user with the Member profile
         serializer.save(user=self.request.user)
 
-# View to get details of a single member
+# View to get details of a single member using username
 class MemberDetailView(generics.RetrieveAPIView):
     queryset = Member.objects.all()
     serializer_class = MemberDetailSerializer
     permission_classes = [IsAuthenticated]
-    lookup_field = 'user__id'  # Assuming you want to get details using the user's ID
+    lookup_field = 'user__username'  # Get details using the user's username
 
 # View to list all members
 class MemberListView(generics.ListAPIView):
     queryset = Member.objects.all()
     serializer_class = MemberListSerializer
     permission_classes = [IsAuthenticated]
-# View to list all members
