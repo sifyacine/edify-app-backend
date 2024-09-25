@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Member
 from .serializers import MemberCreateSerializer, MemberDetailSerializer, MemberListSerializer
 
-# View to create a new member
+# View to create a new member (if you still need manual creation)
 class MemberCreateView(generics.CreateAPIView):
     queryset = Member.objects.all()
     serializer_class = MemberCreateSerializer
