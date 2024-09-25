@@ -27,6 +27,8 @@ SECRET_KEY = 'django-insecure-w^7=p4iwy7csf$wdwc%%#jsyugb(c^&%yhoigz3e_4@u&^5wqp
 DEBUG = True
 
 ALLOWED_HOSTS = ['edify-jicc8.ondigitalocean.app', '127.0.0.1', 'localhost']
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # حيث BASE_DIR هو مسار المشروع الرئيسي
+MEDIA_URL = '/media/'
 
 AUTH_USER_MODEL = 'authentication.User'
 
@@ -44,6 +46,13 @@ INSTALLED_APPS = [
     'drf_yasg',
     'authentication',
     'members',
+    'posts',
+    'postlike',
+    'postcomment',
+    'hashtag',
+    'shortvideo',
+    'courses',
+    'videos'
 ]
 
 MIDDLEWARE = [
