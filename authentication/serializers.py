@@ -87,7 +87,6 @@ class LoginSerializer(serializers.ModelSerializer):
 
         return super().validate(attrs)
 
-
 class ResetPasswordEmailRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(min_length=2)
 
