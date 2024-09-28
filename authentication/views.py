@@ -22,6 +22,8 @@ from .utils import Util
 from django.shortcuts import redirect
 from django.http import HttpResponsePermanentRedirect
 import os
+from rest_framework.permissions import IsAuthenticated
+
 
 
 class CustomRedirect(HttpResponsePermanentRedirect):
@@ -29,7 +31,29 @@ class CustomRedirect(HttpResponsePermanentRedirect):
     allowed_schemes = [os.environ.get('APP_SCHEME'), 'http', 'https']
 
 
+class ResendVerificationEmailView(views.APIView):
+    permission_classes = [IsAuthenticated]  # Make sure only logged-in users can request
 
+    def post(self, request):
+        user = request.user
+        if user.is_verified:
+            return Response({"error": "This account is already verified."}, status=status.HTTP_400_BAD_REQUEST)
+
+        token = RefreshToken.for_user(user).access_token
+        current_site = get_current_site(request).domain
+        relativeLink = reverse('email-verify')
+        absurl = 'http://' + current_site + relativeLink + "?token=" + str(token)
+
+        email_body = f"Hi {user.username},\nUse the link below to verify your email \n{absurl}"
+        data = {
+            'email_body': email_body,
+            'to_email': user.email,
+            'email_subject': 'Resend: Verify your email'
+        }
+
+        Util.send_email(data)
+        return Response({"success": "Verification email resent successfully."}, status=status.HTTP_200_OK)
+    
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
     renderer_classes = (UserRenderer,)
