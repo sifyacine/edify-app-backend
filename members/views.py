@@ -19,7 +19,7 @@ class MemberDetailView(generics.RetrieveAPIView):
     queryset = Member.objects.all()
     serializer_class = MemberDetailSerializer
     permission_classes = [IsAuthenticated]
-    lookup_field = 'user__id'  # Get details using the user's username
+    lookup_field = 'user__username'  # Fetch member using username
 
 # View to list all members
 class MemberListView(generics.ListAPIView):
