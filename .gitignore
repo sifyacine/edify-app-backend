@@ -1,1 +1,10 @@
 .env
+venv
+__pycache__
+.idea/
+media/chat-audio
+media/chat-images
+*.sqlite3
+# Ignore Django migration files
+*/migrations/*
+!*/migrations/__init__.py

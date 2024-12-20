@@ -1,10 +1,14 @@
 from django.db import models
 from authentication.models import User  # Replace 'authentication' with the actual name of your auth app
+import uuid
 
 class Member(models.Model):
     # Linking to the User model with a one-to-one relationship
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='member_profile')
     
+
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+
     # Optional fields for member details
     full_name = models.CharField(max_length=255, null=True, blank=True)
     general_rating = models.FloatField(default=0.0)

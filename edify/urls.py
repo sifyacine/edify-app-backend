@@ -31,6 +31,9 @@ urlpatterns = [
     path('courses/', include('courses.urls')),
     path('videos/', include('videos.urls')),
 
+    path('chat/', include('chat_app.urls')),
+    path('file/', include('media_app.urls')),
+
 
 
 
